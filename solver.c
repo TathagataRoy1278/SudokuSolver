@@ -99,14 +99,14 @@ int setBasicPossibilities()//checks Row and Coloumns entries
 			if(!(grid[j][i] == -1))
 				colPossibilities[grid[j][i]-1] = 0;
 		}
-		printf("1\n");
+		
 		for(j = 0;j<9;j++)
 		{
 			if(grid[j][i]==-1)
 				arrayAND(j,i,&possibilities[j][i][0], &colPossibilities[0]);
 			else
 				memcpy(possibilities[j][i], arrayneg1, sizeof(possibilities[j][i]));
-			printf("2\n");
+			
 		}
 
 	}
