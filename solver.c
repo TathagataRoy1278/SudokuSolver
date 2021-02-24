@@ -10,7 +10,7 @@ int possibilities[9][9][9];
 
 //constants
 const int arrayneg1[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
-
+const int array1[9] = {1,1,1,1,1,1,1,1,1};
 
 int existsInRow(int i, int target)
 {
@@ -165,6 +165,30 @@ int printPossibilities()
 	}
 }
 
+void setBoxPossibilities()
+{
+	int boxPossibilities[9];
+
+
+	for(int i = 0;i<3;i++)
+	{
+		memcpy(boxPossibilities, array1, sizeof(boxPossibilities));
+		for(int j = 0;j<3;j++)
+		{
+			for(int row = i*3;row<(i+1)*3;row++)
+				for(int col = j*3; col<(j+1)*3;col++)
+					boxPossibilities[grid[row][col]-1] = 0;
+
+			for(int row = i*3;row<(i+1)*3;row++)
+                                for(int col = j*3; col<(j+1)*3;col++)
+                                        arrayAND(row,col,&possibilities[row][col][0],&boxPossibilities[0]);
+
+		} 
+		
+
+	}
+}
+
 int main()
 {
 	setSeed(789876);
@@ -174,5 +198,8 @@ int main()
 	printf("\n");
 
 	setBasicPossibilities();
-	//printPossibilities();
+	setBoxPossibilities();
+
+	printPossibilities();
+
 }
