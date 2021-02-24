@@ -9,7 +9,7 @@
 int possibilities[9][9][9];
 
 //constants
-const short arrayneg1[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
+const int arrayneg1[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
 
 
 int existsInRow(int i, int target)
@@ -174,5 +174,5 @@ int main()
 	printf("\n");
 
 	setBasicPossibilities();
-	printPossibilities();
+	//printPossibilities();
 }
