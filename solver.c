@@ -353,10 +353,10 @@ int main()
 		printf("Printing Box Possibilities\n\n");
 	        setBoxPossibilities();//printPossibilities();
 
-		printGrid();
+		//printGrid();
 	}
 
-	printf("%d %d %d %d\n", existsInCol(6, 6), existsInCol(6, 7), existsInBox(1,6, 6 ), existsInBox(1,6,7));
+
 
 	if(!gridSolved())
 	{
