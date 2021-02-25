@@ -2,6 +2,7 @@
 #include <math.h>
 #include "generator.h"
 #include <string.h>
+#include "gridDraw.h"
 
 #define true 1
 #define false 0
@@ -362,5 +363,5 @@ int main()
 		solve_sudoku();
 	}
 
-	printGrid();
+	drawGrid();
 }
