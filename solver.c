@@ -7,10 +7,12 @@
 #define false 0
 
 int possibilities[9][9][9];
+int singleCandidates[81];
 
 //constants
 const int arrayneg1[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
 const int array1[9] = {1,1,1,1,1,1,1,1,1};
+const int array0[9] =  {0};
 
 int existsInRow(int i, int target)
 {
@@ -82,7 +84,10 @@ int setBasicPossibilities()//checks Row and Coloumns entries
 				rowPossibilities[grid[i][j]-1] = 0;
 		for(j = 0;j<9;j++)
 			if(grid[i][j] == -1)
-				memcpy(possibilities[i][j],rowPossibilities, sizeof(possibilities[i][j]));
+				if(memcmp(possibilities[i][j],array0,sizeof(possibilities[i][j])) == 0)
+					memcpy(possibilities[i][j],rowPossibilities, sizeof(possibilities[i][j]));
+				else
+					arrayAND(i,j,&possibilities[i][j][0], &rowPossibilities[0]);
 			else	
 				memcpy(possibilities[i][j], arrayneg1, sizeof(possibilities[i][j]));
 
@@ -92,25 +97,10 @@ int setBasicPossibilities()//checks Row and Coloumns entries
 		//then it merged both by using AND on the two arrays
 		//obtained by checking row and coloumn possibilities
 
-		int colPossibilities[9] = {1,1,1,1,1,1,1,1,1};
-
-		for(j = 0;j<9;j++)
-		{
-			if(!(grid[j][i] == -1))
-				colPossibilities[grid[j][i]-1] = 0;
-		}
 		
-		for(j = 0;j<9;j++)
-		{
-			if(grid[j][i]==-1)
-				arrayAND(j,i,&possibilities[j][i][0], &colPossibilities[0]);
-			else
-				memcpy(possibilities[j][i], arrayneg1, sizeof(possibilities[j][i]));
-			
-		}
 
 	}
-/*
+
 	for(int j = 0;j<9;j++)
 	{
 		int colPossibilities[9] = {1,1,1,1,1,1,1,1,1};
@@ -120,10 +110,12 @@ int setBasicPossibilities()//checks Row and Coloumns entries
 				colPossibilities[grid[i][j]-1] = 0;
 		for(int i = 0;i<9;i++)
 		{
-			if(grid[i][j]
-			arrayAND(i,j,&possibilities[i][j][0], &colPossibilities[0]);
+			if(grid[i][j]==-1)
+				arrayAND(i,j,&possibilities[i][j][0], &colPossibilities[0]);
+			else 
+				memcpy(possibilities[i][j], arrayneg1, sizeof(possibilities[i][j]));
 		}
-	}*/
+	}
 }
 
 void printGrid()
@@ -156,10 +148,10 @@ int printPossibilities()
 	{
 		for(int j = 0;j<9;j++)
 		{
-			printf("[");
+			printf("(%d, %d) [", i, j);
 			for(int k = 0;k<9;k++)
 				printf("%d, ", possibilities[i][j][k]);
-			printf("], ");
+			printf("], \n");
 		}
 		printf("\n");
 	}
@@ -175,13 +167,16 @@ void setBoxPossibilities()
 		memcpy(boxPossibilities, array1, sizeof(boxPossibilities));
 		for(int j = 0;j<3;j++)
 		{
+			memcpy(boxPossibilities, array1, sizeof(boxPossibilities));
 			for(int row = i*3;row<(i+1)*3;row++)
 				for(int col = j*3; col<(j+1)*3;col++)
-					boxPossibilities[grid[row][col]-1] = 0;
+					if(grid[row][col]!=-1)
+						boxPossibilities[grid[row][col]-1] = 0;
 
 			for(int row = i*3;row<(i+1)*3;row++)
                                 for(int col = j*3; col<(j+1)*3;col++)
-                                        arrayAND(row,col,&possibilities[row][col][0],&boxPossibilities[0]);
+					if(grid[row][col] == -1)
+                                        	arrayAND(row,col,&possibilities[row][col][0],&boxPossibilities[0]);
 
 		} 
 		
@@ -189,17 +184,85 @@ void setBoxPossibilities()
 	}
 }
 
+int numberOfSingleCandidates()
+{	
+	//can be optimized using a linked list
+
+	int numberOfCandidates = 0;
+	int ctr = 0;
+	for(int i = 0;i<9;i++)
+		for(int j = 0;j<9;j++)
+		{
+			numberOfCandidates = 0;
+			for(int k = 0;k < 9;k++)
+			{
+				if(possibilities[i][j][k]!=-1)
+					numberOfCandidates += possibilities[i][j][k];
+				else 
+					break;
+			}
+			if(numberOfCandidates==1)
+				singleCandidates[ctr++] = i*9+j+1;
+		}
+	
+	
+
+	if(ctr)
+		return 1;
+	else
+		return 0;
+}
+
+int fillSingleCandidates()
+{
+	for(int i = 0;i<81;i++)
+	{
+		if(singleCandidates[i] == 0)
+			break;
+		
+		int row = (singleCandidates[i]-1)/9;
+		int col = (singleCandidates[i]-1)%9;
+
+		int candidate = -1;
+		for(candidate = 0;candidate<9;candidate++)
+		{
+			if(possibilities[row][col][candidate]==1)
+				break;
+		}
+		if(candidate<9 && candidate>=0)
+		{
+			grid[row][col] = candidate+1;
+			memcpy(possibilities[row][col],arrayneg1, sizeof(possibilities[row][col]));
+		}
+	
+
+	}
+	int tmpArr[81] = {0};
+	memcpy(singleCandidates, tmpArr, sizeof(singleCandidates));
+
+}
+
 int main()
 {
 	setSeed(789876);
 	inputGrid();
-	
+		
 	printGrid();
 	printf("\n");
+	setBasicPossibilities(); printPossibilities();printf("\n");
+	setBoxPossibilities();printPossibilities();
 
-	setBasicPossibilities();
-	setBoxPossibilities();
+	//fillSingleCandidates();
+	while(numberOfSingleCandidates()!=0)
+	{
+		fillSingleCandidates();
 
-	printPossibilities();
+         	printf("\n");
+		printf("Printing Basic possibilities\n\n");
+        	setBasicPossibilities(); printPossibilities();printf("\n");
+		printf("Printing Box Possibilities\n\n");
+	        setBoxPossibilities();printPossibilities();
 
+		printGrid();
+	}
 }
