@@ -3,6 +3,9 @@
 #include "generator.h"
 #include <string.h>
 #include "gridDraw.h"
+#include <stdlib.h>
+#include <time.h>
+
 
 #define true 1
 #define false 0
@@ -333,13 +336,20 @@ int backTrack()
 
 int main()
 {
-	setSeed(789876);
-	inputGrid();
-		
-	printGrid();
+	int difficulty = 50;
+	int tmp[9];
+
+	setSeed(189876);
+	generateGrid();
+	for(int i = 0;i<9;i++)
+		for(int j = 0;j<9;j++)
+			if(grid[i][j] == 0)
+				grid[i][j] = -1;
+	
+
 	printf("\n");
-	setBasicPossibilities(); printPossibilities();printf("\n");
-	setBoxPossibilities();printPossibilities();
+	setBasicPossibilities(); 
+	setBoxPossibilities();
 
 	//fillSingleCandidates();
 	while(numberOfSingleCandidates()!=0)
@@ -361,6 +371,19 @@ int main()
 	{
 		solve_sudoku();
 	}
+	
+	
+	for(int i = 0;i<9;i++)
+         {
+                 for(int j = 0;j<9;j++)
+                 {
+                         if(rand()%100 < ((float)difficulty/81.0*100))
+                                 grid[i][j] = -1;
+ 
+ 
+                 }
+         }
+
 
 	drawGrid();
 }

@@ -9,7 +9,7 @@ void drawGrid()
 	//int a = 10;
 	//int 
 	
-
+	char num[2];
 	for(int i = 0;i<9;i++)
 	{
 		printf("\u2523");
@@ -22,10 +22,18 @@ void drawGrid()
 
 		for(int j = 0;j<10;j++)
 		{
+			if(grid[i][j] == -1)
+			{
+				num[0] = ' ';
+				num[1] = '\0';
+			}
+			else
+				sprintf(num, "%d", grid[i][j]);
+
 			if(j==9)
 				printf("%s   ",j%3!=0?"\u2502" : "\u2503" );
 			else
-				printf("%s %d ", j%3!=0?"\u2502" : "\u2503" ,grid[i][j]);
+				printf("%s %s ", j%3!=0?"\u2502" : "\u2503" ,num);
 
 		}
 		printf("\n");

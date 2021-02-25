@@ -8,9 +8,9 @@
 int na[9];
 int grid[9][9];
 unsigned long seed = 90;
-unsigned long currBox;
+int box[9] = {1,2,3,4,5,6,7,8,9};
 
-int array0[9] = {0};
+int arrayzero[9] = {0};
 int entries[9];
 
 
@@ -20,6 +20,10 @@ short seed_given = 0;
 void setSeed(long n)
 {
 	seed = n;
+	while(seed<=999999999)
+		seed*=seed;
+
+	seed%=999999999;
 	seed_given = 1;
 }
 
@@ -65,30 +69,20 @@ int fact(int n)
 	return product;
 }
 
-int getGrid(int tmpSeed, int depth)
+int getGrid(long tmpSeed)
 {
 
-	if(depth>10)
-		return 1;
-	int ctr = 0;
-	if(tmpSeed>0)
+
+	for (int i = 9-1; i >= 0; --i)
 	{
-		int tmp = fact(9-depth);
-		while(tmp <= tmpSeed)
-		{
-			tmpSeed-=tmp;
-			ctr++;
-		}
-	}
-	for(int i = 0;i<9;i++)
-		if(entries[i] == 0)
-		{
-			if(entries[(i+ctr)%9] != 0)
-				continue;
-			currBox = currBox*10+i+1+ctr;
-			entries[(i+ctr)%9] = 1;
-			return getGrid(tmpSeed,++depth);
-		}
+   		
+		int j = tmpSeed % (i+1);
+		tmpSeed/=(i+1);
+
+	   	int temp = box[i];
+   		box[i] = box[j];
+	     	box[j] = temp;
+	}	
 
 }
 
@@ -105,20 +99,25 @@ void inputGrid()
 
 int generateGrid()
 {
+	int ctr;
+
+	srand(time(0));
 	for(int i = 0;i<3;i++)
 	{
-		memcpy(entries, array0, sizeof(entries));
-		getGrid((seed*(i+1))%362880, 1);
-		printf("%lu\n", currBox);
+		memcpy(entries, arrayzero, sizeof(entries));
+		ctr = 0;
+		getGrid(seed*(i+1));
 		for(int j = i*3;j<(i+1)*3;j++)
 			for(int k = i*3;k<(i+1)*3;k++)
 			{
-				grid[j][k] = currBox%10;
-				currBox/=10;
+				grid[j][k] = box[ctr++];
 			}
-	}
-}
 
+	}
+
+
+}
+/*
 int main()
 {
 	generateGrid();
@@ -141,7 +140,7 @@ int main()
                         printf("\n");
         }
 
-}
+}*/
 /*
  *
 1 2 3 4 5 6 7 8 9
