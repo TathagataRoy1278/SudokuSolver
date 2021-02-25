@@ -242,6 +242,95 @@ int fillSingleCandidates()
 
 }
 
+int gridSolved()
+{
+	
+	for(int i = 0;i<9;i++)
+		for(int j = 0;j<9;j++)
+			if(grid[i][j] == -1)
+				return 0;
+
+	return 1;
+}
+
+int gridValid(int i, int j, int target)
+{
+	if(!existsInRow(i,target) && !existsInCol(j,target) && !existsInBox(i,j, target))
+		return 1;
+	else 
+		return 0;
+
+}
+
+
+int find_empty_cell( int *row, int *column) {
+  for (int x = 0; x < 9; x++) {
+    for (int y = 0; y < 9; y++) {
+      if (grid[x][y]==-1) {
+        *row = x;
+        *column = y;
+
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
+int solve_sudoku()
+{
+    int row;
+    int col;
+    if(find_empty_cell(&row, &col) == 0)
+        return 1;
+    int i;
+    for(i=0;i<9;i++)
+    {
+	if(possibilities[row][col][i]==-1)
+		break;
+
+	if(possibilities[row][col][i]==1)
+        if(gridValid( row, col,i+1))
+        {
+            grid[row][col] = i+1;
+            //backtracking
+            if(solve_sudoku())
+                return 1;
+            
+            grid[row][col]=-1;
+        }
+    }
+    return 0;
+}
+
+int backTrack()
+{
+	for(int i = 0;i<9;i++)
+		for(int j = 0;j<9;j++)
+			{
+				int tmp[9];
+				if(grid[i][j] == -1)
+					for(int k = 0;k<9;k++)
+						if(possibilities[i][j][k] == 1)
+						{
+							grid[i][j] = k+1;
+
+							if(!gridValid(i, j, k+1))
+								continue;
+
+							if(gridSolved())
+								return 1;
+
+							if(backTrack()==0)
+								continue;
+							else
+								return 1;
+						}
+				return 0;
+
+			}
+}
+
 int main()
 {
 	setSeed(789876);
@@ -259,10 +348,19 @@ int main()
 
          	printf("\n");
 		printf("Printing Basic possibilities\n\n");
-        	setBasicPossibilities(); printPossibilities();printf("\n");
+        	setBasicPossibilities(); //printPossibilities();printf("\n");
 		printf("Printing Box Possibilities\n\n");
-	        setBoxPossibilities();printPossibilities();
+	        setBoxPossibilities();//printPossibilities();
 
 		printGrid();
 	}
+
+	printf("%d %d %d %d\n", existsInCol(6, 6), existsInCol(6, 7), existsInBox(1,6, 6 ), existsInBox(1,6,7));
+
+	if(!gridSolved())
+	{
+		solve_sudoku();
+	}
+
+	printGrid();
 }
