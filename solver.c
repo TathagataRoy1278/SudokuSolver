@@ -139,7 +139,6 @@ void printGrid()
                 if((i+1)%3==0)
                         printf("\n");
         }
-        printf("%d\n", existsInBox(3,1,6));
 
 }
 
