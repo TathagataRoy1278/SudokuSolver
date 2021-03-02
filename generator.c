@@ -4,6 +4,9 @@
 #include <time.h>
 #include "generator.h"
 #include <string.h>
+#include "solver.h"
+#include "gridDraw.h"
+
 
 int na[9];
 int grid[9][9];
@@ -27,7 +30,7 @@ void setSeed(long n)
 	seed_given = 1;
 }
 
-void setRandomSeef()
+void setRandomSeed()
 {
 	srand(time(0));
 	seed = rand();
@@ -97,7 +100,7 @@ void inputGrid()
 	}	
 }
 
-int generateGrid()
+int generateGrid(int difficulty)
 {
 	int ctr;
 
@@ -115,6 +118,56 @@ int generateGrid()
 
 	}
 
+
+	//drawGrid();
+	for(int i = 0;i<9;i++)
+		for(int j = 0;j<9;j++)
+			if(grid[i][j] == 0)
+				grid[i][j] = -1;
+	
+
+	printf("\n");
+	setBasicPossibilities(); 
+	setBoxPossibilities();
+
+        //drawGrid();
+
+
+	//fillSingleCandidates();
+	while(numberOfSingleCandidates()!=0)
+	{
+		fillSingleCandidates();
+
+         	printf("\n");
+		//printf("Printing Basic possibilities\n\n");
+        	setBasicPossibilities(); //printPossibilities();printf("\n");
+		//printf("Printing Box Possibilities\n\n");
+	        setBoxPossibilities();//printPossibilities();
+
+		//printGrid();
+	}
+
+
+	//drawGrid();
+
+	if(!gridSolved())
+	{
+		solve_sudoku();
+	}
+	
+	
+	for(int i = 0;i<9;i++)
+         {
+                 for(int j = 0;j<9;j++)
+                 {
+                         if(rand()%100 < ((float)difficulty/81.0*100))
+                                 grid[i][j] = -1;
+ 
+ 
+                 }
+         }
+
+	//drawGrid();
 
 }
 /*

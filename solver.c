@@ -86,12 +86,20 @@ int setBasicPossibilities()//checks Row and Coloumns entries
 		for(j = 0;j<9;j++)
 			if(!(grid[i][j] == -1))
 				rowPossibilities[grid[i][j]-1] = 0;
+
+		//
+		//
+		//0 1 2 3 4 5 6 7 8
+		//0 1 1 1 0 1 1 1 0 
+		//
+		//
+
 		for(j = 0;j<9;j++)
 			if(grid[i][j] == -1)
 				if(memcmp(possibilities[i][j],array0,sizeof(possibilities[i][j])) == 0)
 					memcpy(possibilities[i][j],rowPossibilities, sizeof(possibilities[i][j]));
 				else
-					arrayAND(i,j,&possibilities[i][j][0], &rowPossibilities[0]);
+					arrayAND(i,j,&possibilities[i][j][0], &rowPossibilities[0]);//remove anding to increase efficiency
 			else	
 				memcpy(possibilities[i][j], arrayneg1, sizeof(possibilities[i][j]));
 
@@ -120,6 +128,19 @@ int setBasicPossibilities()//checks Row and Coloumns entries
 				memcpy(possibilities[i][j], arrayneg1, sizeof(possibilities[i][j]));
 		}
 	}
+
+
+	//1 0 0 1 1 0 0 1 1 - rows
+	//1 1 1 0 1 1 0 0 0 - coloumn
+	//
+	//1 0 0 0 1 0 0 0 0
+
+
+
+
+
+
+
 }
 
 void printGrid()
@@ -305,47 +326,25 @@ int solve_sudoku()
     }
     return 0;
 }
+}
 
-int backTrack()
+int init()
 {
-	for(int i = 0;i<9;i++)
+	for(int i =0;i<9;i++)
 		for(int j = 0;j<9;j++)
-			{
-				int tmp[9];
-				if(grid[i][j] == -1)
-					for(int k = 0;k<9;k++)
-						if(possibilities[i][j][k] == 1)
-						{
-							grid[i][j] = k+1;
+			memcpy(possibilities[i][j], array0, sizeof(possibilities[i][j]));
 
-							if(!gridValid(i, j, k+1))
-								continue;
-
-							if(gridSolved())
-								return 1;
-
-							if(backTrack()==0)
-								continue;
-							else
-								return 1;
-						}
-				return 0;
-
-			}
+	for(int i =0;i<81;i++)
+		singleCandidates[i] = 0;
 }
 
 int main()
 {
-	int difficulty = 50;
-	int tmp[9];
+	//inputGrid();
+	generateGrid(45);
+	drawGrid();
 
-	setSeed(189876);
-	generateGrid();
-	for(int i = 0;i<9;i++)
-		for(int j = 0;j<9;j++)
-			if(grid[i][j] == 0)
-				grid[i][j] = -1;
-	
+	init();
 
 	printf("\n");
 	setBasicPossibilities(); 
@@ -355,12 +354,12 @@ int main()
 	while(numberOfSingleCandidates()!=0)
 	{
 		fillSingleCandidates();
+		
+		//drawGrid();
 
          	printf("\n");
-		printf("Printing Basic possibilities\n\n");
-        	setBasicPossibilities(); //printPossibilities();printf("\n");
-		printf("Printing Box Possibilities\n\n");
-	        setBoxPossibilities();//printPossibilities();
+        	setBasicPossibilities();
+	        setBoxPossibilities();
 
 		//printGrid();
 	}
@@ -372,18 +371,6 @@ int main()
 		solve_sudoku();
 	}
 	
-	
-	for(int i = 0;i<9;i++)
-         {
-                 for(int j = 0;j<9;j++)
-                 {
-                         if(rand()%100 < ((float)difficulty/81.0*100))
-                                 grid[i][j] = -1;
- 
- 
-                 }
-         }
-
 
 	drawGrid();
 }
