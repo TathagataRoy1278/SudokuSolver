@@ -326,7 +326,7 @@ int solve_sudoku()
     }
     return 0;
 }
-}
+
 
 int init()
 {
@@ -341,7 +341,7 @@ int init()
 int main()
 {
 	//inputGrid();
-	generateGrid(45);
+	generateGrid(20);
 	drawGrid();
 
 	init();
