@@ -338,11 +338,11 @@ int init()
 		singleCandidates[i] = 0;
 }
 
-int main()
+int solve()
 {
 	//inputGrid();
-	generateGrid(20);
-	drawGrid();
+	//generateGrid(20);
+	//drawGrid();
 
 	init();
 
@@ -371,6 +371,8 @@ int main()
 		solve_sudoku();
 	}
 	
-
-	drawGrid();
+	if(!gridSolved())
+		printf("This grid has no Solution.\n");
+	else
+		drawGrid();
 }
