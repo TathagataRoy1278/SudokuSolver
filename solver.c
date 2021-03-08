@@ -166,7 +166,7 @@ void printGrid()
 
 }
 
-int printPossibilities()
+int printPossibilities()//debug function
 {
 	for(int i = 0;i<9;i++)
 	{
@@ -375,4 +375,6 @@ int solve()
 		printf("This grid has no Solution.\n");
 	else
 		drawGrid();
+
+	printGrid();
 }
